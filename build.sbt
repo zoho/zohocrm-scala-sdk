@@ -1,3 +1,4 @@
+import sbt.Keys.versionScheme
 
 name := "scala-sdk"
 scalaVersion := "2.13.5"
@@ -11,6 +12,7 @@ publishTo := {
   if (isSnapshot.value) Some("snapshots" at nexus + "content/repositories/snapshots")
   else Some("releases" at nexus + "service/local/staging/deploy/maven2")
 }
+versionScheme := Some("semver-spec")
 publishMavenStyle := true
 pomIncludeRepository := { _ =>
   false
