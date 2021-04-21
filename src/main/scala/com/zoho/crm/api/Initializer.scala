@@ -29,9 +29,9 @@ object Initializer {
   private var initializer: Initializer = _
 
   @throws[SDKException]
-  def initialize(user: UserSignature, environment: Environment, token: Token, store: TokenStore, sdkConfig: SDKConfig, resourcePath: String, logger: com.zoho.api.logger.Logger, proxy: Option[RequestProxy]=None): Unit = {
+  def initialize(user: UserSignature, environment: Environment, token: Token, store: TokenStore, sdkConfig: SDKConfig, resourcePath: String, logger: Option[com.zoho.api.logger.Logger]=None, proxy: Option[RequestProxy]=None): Unit = {
     try {
-      var logger1 = logger
+      var logger1 = logger.orNull
       if (user == null) throw new SDKException(Constants.INITIALIZATION_ERROR, Constants.USERSIGNATURE_ERROR_MESSAGE)
       if (environment == null) throw new SDKException(Constants.INITIALIZATION_ERROR, Constants.ENVIRONMENT_ERROR_MESSAGE)
       if (token == null) throw new SDKException(Constants.INITIALIZATION_ERROR, Constants.TOKEN_ERROR_MESSAGE)
