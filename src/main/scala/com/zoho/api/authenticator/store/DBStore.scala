@@ -53,24 +53,24 @@ class DBStore (private var host :Option[String]=None , private var databaseName 
 
       connection = DriverManager.getConnection(this.connectionString, this.userName.get, this.password.get)
 
-     if (token.isInstanceOf[OAuthToken]) {
+      if (token.isInstanceOf[OAuthToken]) {
 
-       statement = connection.createStatement()
+        statement = connection.createStatement()
 
-       val query = this.constructDBQuery(user.getEmail, oauthToken, isDelete = false)
+        val query = this.constructDBQuery(user.getEmail, oauthToken, isDelete = false)
 
-       resultSet = statement.executeQuery(query)
+        resultSet = statement.executeQuery(query)
 
-       while (resultSet.next()) {
-         oauthToken.setAccessToken(resultSet.getString(5))
+        while (resultSet.next()) {
+          oauthToken.setAccessToken(resultSet.getString(5))
 
-         oauthToken.setExpiresIn(String.valueOf(resultSet.getString(7)))
+          oauthToken.setExpiresIn(String.valueOf(resultSet.getString(7)))
 
-         oauthToken.setRefreshToken(resultSet.getString(4))
+          oauthToken.setRefreshToken(resultSet.getString(4))
 
-         return oauthToken
-       }
-     }
+          return oauthToken
+        }
+      }
     }catch {
       case e : Exception =>
         throw new SDKException(Constants.TOKEN_STORE, Constants.GET_TOKEN_DB_ERROR,e)
@@ -93,7 +93,7 @@ class DBStore (private var host :Option[String]=None , private var databaseName 
     query = query.concat("oauthtoken where user_mail='" + email + "' and client_id='" + token.getClientID + "' and ")
 
     if (token.getGrantToken != null) query += "grant_token='" + token.getGrantToken + "'"
-    else query += " and refresh_token='" + token.getRefreshToken + "'"
+    else query += "refresh_token='" + token.getRefreshToken + "'"
 
     query
   }
@@ -236,7 +236,7 @@ class DBStore (private var host :Option[String]=None , private var databaseName 
       try statement.executeUpdate
       finally if (statement != null) statement.close()
     }
-     catch {
+    catch {
       case ex: Exception =>
         throw new SDKException(Constants.TOKEN_STORE, Constants.DELETE_TOKENS_DB_ERROR, ex)
     }
