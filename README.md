@@ -473,7 +473,7 @@ object Initialize {
 
         // The following are the available initialize methods
 
-        Initializer.initialize(user, environment, token, tokenstore, sdkConfig, resourcePath, logger, Option(requestProxy))
+        Initializer.initialize(user, environment, token, tokenstore, sdkConfig, resourcePath, Option(logger), Option(requestProxy))
     }
 }
 ```
@@ -630,7 +630,7 @@ object MultiThread {
     val token1 = new OAuthToken("clientId1", "clientSecret1", "REFRESH/GRANT token", TokenType.REFRESH / GRANT)
     val resourcePath = "/Users/user_name/Documents/scalasdk-application"
     val sdkConfig = new SDKConfig.Builder().setAutoRefreshFields(false).setPickListValidation(true).build
-    Initializer.initialize(user1, environment1, token1, tokenStore, sdkConfig, resourcePath, logger)
+    Initializer.initialize(user1, environment1, token1, tokenStore, sdkConfig, resourcePath, Option(logger))
     var multiThread = new MultiThread(user1, environment1, token1, "Leads", sdkConfig, null)
     multiThread.start()
     val environment2 = EUDataCenter.PRODUCTION
@@ -695,7 +695,7 @@ object MultiThread {
     val token = new OAuthToken("clientId1", "clientSecret1", "REFRESH/GRANT token", TokenType.REFRESH / GRANT)
     val sdkConfig = new SDKConfig.Builder().setAutoRefreshFields(false).setPickListValidation(true).build
     val resourcePath = "/Users/user_name/Documents/scalasdk-application"
-    Initializer.initialize(user, environment, token, tokenStore, sdkConfig, resourcePath, logger)
+    Initializer.initialize(user, environment, token, tokenStore, sdkConfig, resourcePath, Option(logger))
     var mtsu = new MultiThread("Deals")
     mtsu.start()
     mtsu = new MultiThread("Leads")
@@ -828,7 +828,7 @@ object Record {
             * 6 -> resourcePath - A String
             * 7 -> Logger instance
             */
-    Initializer.initialize(user, environment, token, tokenstore, sdkConfig, resourcePath, logger)
+    Initializer.initialize(user, environment, token, tokenstore, sdkConfig, resourcePath, Option(logger))
     val moduleAPIName = "Leads"
     val recordOperations = new RecordOperations
     val paramInstance = new ParameterMap
