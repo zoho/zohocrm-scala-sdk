@@ -30,5 +30,5 @@ jobs:
       - name: 'Publish Release'
         run: 'sbt publishSigned sonatypeRelease'
         env:
-          OSSRH_USER: '${{ secrets.OSSRH_USER}}'
+          OSSRH_USER: '${{ secrets.OSSRH_USERNAME}}'
           OSSRH_PASSWORD: '${{ secrets.OSSRH_TOKEN}}'
