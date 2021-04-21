@@ -3,6 +3,7 @@ import sbt.Keys.versionScheme
 name := "scala-sdk"
 scalaVersion := "2.13.5"
 organization:="com.zoho.crm"
+sonatypeProfileName :="com.zoho"
 organizationName:="zoho"
 organizationHomepage :=Some(url("https://www.zoho.com/crm/"))
 description := "An API client for CRM customers, with which they can call ZOHO CRM APIs with ease"
