@@ -28,7 +28,7 @@ jobs:
           gpg-private-key: '${{ secrets.GPG_PRIVATE_KEY }}'
           passphrase: '${{ secrets.GPG_PASSPHRASE }}'
       - name: 'Publish Release'
-        run: 'sbt publishSigned sonatypeRelease'
+        run: 'sbt sonatypePrepare publishSigned sonatypeRelease'
         env:
           OSSRH_USER: '${{ secrets.OSSRH_USER}}'
           OSSRH_PASSWORD: '${{ secrets.OSSRH_TOKEN}}'
