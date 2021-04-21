@@ -297,7 +297,7 @@ class JSONConverter(commonAPIHandler: CommonAPIHandler) extends Converter(common
       }
     }
     if (skipMandatory || checkException(classMemberName, recordInstance, instanceNumber, lookUp, requiredKeys, primaryKeys)) {
-        return requestJSON
+      return requestJSON
     }
   }
 
@@ -367,8 +367,8 @@ class JSONConverter(commonAPIHandler: CommonAPIHandler) extends Converter(common
 
     if (requestObjects.nonEmpty)
       if (memberDetail == null|| (memberDetail != null && !memberDetail.has(Constants.STRUCTURE_NAME))) for ( request <- requestObjects ) {
-          jsonArray.put(redirectorForObjectToJSON(request))
-        }
+        jsonArray.put(redirectorForObjectToJSON(request))
+      }
       else  {
 
         val pack = memberDetail.getString(Constants.STRUCTURE_NAME)
@@ -449,7 +449,7 @@ class JSONConverter(commonAPIHandler: CommonAPIHandler) extends Converter(common
     }
     else {
 
-       val constructor: Constructor[_] = Class.forName(packageName).getDeclaredConstructors()(0)
+      val constructor: Constructor[_] = Class.forName(packageName).getDeclaredConstructors()(0)
 
       if (Modifier.isPrivate(constructor.getModifiers)) constructor.setAccessible(true)
       instance = constructor.newInstance()
@@ -802,13 +802,9 @@ class JSONConverter(commonAPIHandler: CommonAPIHandler) extends Converter(common
 
     var sdkName = ""
 
-    var index = 0
-
-    if (name.isEmpty) index = 1
-
     sdkName = name(0).substring(0, 1).toLowerCase().concat(name(0).substring(1))
 
-    index = 1
+    val index = 1
 
     for(nameIndex <- index until name.length){
 
@@ -823,6 +819,4 @@ class JSONConverter(commonAPIHandler: CommonAPIHandler) extends Converter(common
 
     sdkName
   }
-
-
 }

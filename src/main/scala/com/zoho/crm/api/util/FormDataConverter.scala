@@ -16,9 +16,6 @@ import org.json.{JSONArray, JSONObject}
 import scala.collection.mutable
 import scala.collection.mutable.ArrayBuffer
 
-object FormDataConverter {
-  private val LOGGER = Logger.getLogger(classOf[SDKLogger].getName)
-}
 
 /**
  * This class is to process the upload file and stream.
@@ -74,9 +71,12 @@ class FormDataConverter(commonAPIHandler: CommonAPIHandler) extends Converter(co
 
           modification = method.invoke(requestObject, memberDetail.getString(Constants.NAME))
         } catch {
-          case e@(_: InvocationTargetException | _: NoSuchMethodException) =>
-            FormDataConverter.LOGGER.log(Level.INFO, Constants.EXCEPTION_IS_KEY_MODIFIED, e)
+          case ex: InvocationTargetException =>
+            throw new SDKException(Constants.EXCEPTION_IS_KEY_MODIFIED,ex)
+          case e:NoSuchMethodException =>
+            throw new SDKException(Constants.EXCEPTION_IS_KEY_MODIFIED,e)
         }
+
 
         if ((modification == None || (modification == 0)) && memberDetail.has(Constants.REQUIRED) && memberDetail.getBoolean(Constants.REQUIRED)) throw new SDKException(Constants.MANDATORY_VALUE_ERROR, Constants.MANDATORY_KEY_ERROR + memberName)
 

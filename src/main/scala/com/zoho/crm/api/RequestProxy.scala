@@ -19,7 +19,6 @@ import com.zoho.crm.api.util.Constants
  * @param userDomain A String containing the domain of the proxy server
  * @throws SDKException Exception
  */
-@throws[SDKException]
 class RequestProxy(var host: String, var port: Integer, var user: Option[String], var password:  Option[String], var userDomain:  Option[String]) {
   if (host == null) throw new SDKException(Constants.REQUEST_PROXY_ERROR, Constants.HOST_ERROR_MESSAGE)
   if (port == null) throw new SDKException(Constants.REQUEST_PROXY_ERROR, Constants.PORT_ERROR_MESSAGE)
@@ -44,7 +43,7 @@ class RequestProxy(var host: String, var port: Integer, var user: Option[String]
    * @param port     A Integer containing The port number of the proxy server
    * @param user     A String containing the user name of the proxy server
    * @param password A String containing the password of the proxy server
-   * @throws SDKException Exception
+   * @throws Exception
    */
   def this(host: String, port: Integer, user: Option[String], password: Option[String]) {
     this(host, port, user, password, None)

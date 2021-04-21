@@ -40,7 +40,8 @@ object  Utility {
    * @throws SDKException Exception
    */
   @throws[SDKException]
-  def getFields(moduleAPIName: String): Unit = {
+  def getFields(moduleAPIName: String): Unit =synchronized {
+
     var recordFieldDetailsPath:String = null
     var lastModifiedTime:String = null
 
@@ -66,7 +67,7 @@ object  Utility {
         recordFieldDetailsJson = Initializer.getJSON(recordFieldDetailsPath)
         if (moduleAPIName==null || recordFieldDetailsJson.has(moduleAPIName.toLowerCase)) return
         else {
-          Utility.fillDatatype()
+          fillDatatype()
           recordFieldDetailsJson.put(moduleAPIName.toLowerCase, new JSONObject)
           var file = new FileWriter(recordFieldDetailsPath)
           file.flush()
@@ -87,7 +88,7 @@ object  Utility {
       }
       else if (Initializer.getInitializer.getSDKConfig.getAutoRefreshFields) {
         newFile = true
-        Utility.fillDatatype()
+        fillDatatype()
 
         apiSupportedModule = if (apiSupportedModule.nonEmpty) apiSupportedModule
         else getModules(null)
@@ -127,7 +128,7 @@ object  Utility {
         getModifiedModules = false
       }
       else {
-        Utility.fillDatatype()
+        fillDatatype()
         var recordFieldDetailsJson = new JSONObject
         recordFieldDetailsJson.put(moduleAPIName.toLowerCase, new JSONObject)
         var file = new FileWriter(recordFieldDetailsPath)
@@ -203,7 +204,7 @@ object  Utility {
       file.flush()
       file.close()
       for ( module <- modifiedModules.keySet ) {
-        Utility.getFields(module)
+        getFields(module)
       }
     }
   }
@@ -240,7 +241,7 @@ object  Utility {
   }
 
   @throws[SDKException]
-  def getRelatedLists(relatedModuleName: String, moduleAPIName: String, commonAPIHandler: CommonAPIHandler): Unit = {
+  def getRelatedLists(relatedModuleName: String, moduleAPIName: String, commonAPIHandler: CommonAPIHandler): Unit =synchronized {
     try {
       var isNewData = false
       val key = (moduleAPIName + Constants.UNDERSCORE + Constants.RELATED_LISTS).toLowerCase
@@ -267,7 +268,7 @@ object  Utility {
         file.write(recordFieldDetailsJSON.toString)
         file.flush()
         file.close()
-        Utility.getRelatedLists(relatedModuleName, moduleAPIName, commonAPIHandler)
+        getRelatedLists(relatedModuleName, moduleAPIName, commonAPIHandler)
       }
     } catch {
       case e: SDKException =>
@@ -283,14 +284,14 @@ object  Utility {
 
   @throws[JSONException]
   @throws[SDKException]
-  private def checkRelatedListExists(relatedModuleName: String, modulerelatedListJA: JSONArray, commonAPIHandler: CommonAPIHandler): Boolean = {
+    private def checkRelatedListExists(relatedModuleName: String, modulerelatedListJA: JSONArray, commonAPIHandler: CommonAPIHandler): Boolean = {
     for ( index <- 0 until modulerelatedListJA.length ) {
       val relatedListJO = modulerelatedListJA.getJSONObject(index)
       if (relatedListJO.getString(Constants.API_NAME) != null && relatedListJO.getString(Constants.API_NAME).equalsIgnoreCase(relatedModuleName)) {
         if (relatedListJO.getString(Constants.HREF) == Constants.NULL_VALUE) throw new SDKException(Constants.UNSUPPORTED_IN_API, commonAPIHandler.getHttpMethod + " " + commonAPIHandler.getAPIPath + Constants.UNSUPPORTED_IN_API_MESSAGE)
         if (!relatedListJO.getString(Constants.MODULE).equalsIgnoreCase(Constants.NULL_VALUE)) {
           commonAPIHandler.setModuleAPIName(relatedListJO.getString(Constants.MODULE))
-          Utility.getFields(relatedListJO.getString(Constants.MODULE))
+          getFields(relatedListJO.getString(Constants.MODULE))
         }
         return true
       }
@@ -314,12 +315,10 @@ object  Utility {
             val relatedLists = responseWrapper.getRelatedLists()
             for ( relatedList <- relatedLists ) {
               val relatedListDetail = new JSONObject
-              relatedListDetail.put(Constants.API_NAME, relatedList.getAPIName())
-              relatedListDetail.put(Constants.MODULE, if (relatedList.getModule().isDefined) relatedList.getModule()
-              else Constants.NULL_VALUE)
-              relatedListDetail.put(Constants.NAME, relatedList.getName())
-              relatedListDetail.put(Constants.HREF, if (relatedList.getHref().isDefined) relatedList.getHref()
-              else Constants.NULL_VALUE)
+              relatedListDetail.put(Constants.API_NAME, if (relatedList.getAPIName().isDefined)relatedList.getAPIName().get else Constants.NULL_VALUE)
+              relatedListDetail.put(Constants.MODULE, if (relatedList.getModule().isDefined) relatedList.getModule().get else Constants.NULL_VALUE)
+              relatedListDetail.put(Constants.NAME, if (relatedList.getName().isDefined)relatedList.getName().get  else Constants.NULL_VALUE)
+              relatedListDetail.put(Constants.HREF, if (relatedList.getHref().isDefined) relatedList.getHref().get  else Constants.NULL_VALUE)
               relatedListJA.put(relatedListDetail)
             }
           case _: relatedlists.APIException =>
@@ -425,7 +424,7 @@ object  Utility {
 
 
   @throws[SDKException]
-  def getModules(): Unit = {
+  def getModules(): Unit = synchronized{
     apiSupportedModule = getModules(null)
   }
 
@@ -573,7 +572,7 @@ object  Utility {
       else module = ""
       fieldDetail.put(Constants.LOOKUP, true)
     }
-    if (module.length > 0) Utility.getFields(module)
+    if (module.length > 0) getFields(module)
     fieldDetail.put(Constants.NAME, keyName)
   }
 

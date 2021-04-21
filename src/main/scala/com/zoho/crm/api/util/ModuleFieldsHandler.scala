@@ -3,8 +3,6 @@ package com.zoho.crm.api.util
 
 import java.io.File
 
-
-import org.json.JSONObject
 import com.zoho.api.logger.SDKLogger
 import java.util.logging.{Level, Logger}
 import com.zoho.crm.api.exception.SDKException
@@ -15,8 +13,6 @@ import java.io.FileWriter
 
 import com.zoho.crm.api.Initializer
 object ModuleFieldsHandler {
-}
-class ModuleFieldsHandler {
 
 
   private val LOGGER: Logger = Logger.getLogger(classOf[SDKLogger].getName)
@@ -26,7 +22,7 @@ class ModuleFieldsHandler {
 
 
   @throws[SDKException]
-  def deleteFieldsFile(): Unit = {
+  def deleteFieldsFile(): Unit = synchronized{
     try {
       val converterInstance = new Converter() {
         /**
@@ -78,11 +74,12 @@ class ModuleFieldsHandler {
         LOGGER.log(Level.SEVERE, Constants.DELETE_FIELD_FILE_ERROR, exception)
         throw exception
     }
+
   }
 
 
   @throws[SDKException]
-  def deleteAllFieldFiles(): Unit = {
+  def deleteAllFieldFiles(): Unit = synchronized{
     try {
       val recordFieldDetailsDirectory = new File(getDirectory)
       if (recordFieldDetailsDirectory.exists) {
@@ -102,7 +99,7 @@ class ModuleFieldsHandler {
 
 
   @throws[SDKException]
-  private def deleteFields(module: String): Unit = {
+   def deleteFields(module: String): Unit = {
     try {
       val converterInstance = new Converter() {
         /**
@@ -133,7 +130,7 @@ class ModuleFieldsHandler {
          * @param requestObject A Object containing the API request body object.
          * @throws Exception Exception
          */
-      override def appendToRequest(requestBase: HttpEntityEnclosingRequestBase, requestObject: Any): Unit = None
+        override def appendToRequest(requestBase: HttpEntityEnclosingRequestBase, requestObject: Any): Unit = None
 
         /**
          * This abstract method is to process the API response.
@@ -144,7 +141,7 @@ class ModuleFieldsHandler {
          * @throws Exception Exception
          */
         override def getWrappedResponse(response: Any, pack: String): Option[_] = None
-}
+      }
       val recordFieldDetailsPath = getDirectory + File.separator + converterInstance.getEncodedFileName
       val recordFieldDetails = new File(recordFieldDetailsPath)
       if (recordFieldDetails.exists) {
@@ -172,7 +169,7 @@ class ModuleFieldsHandler {
    * @throws SDKException Exception
    */
   @throws[SDKException]
-  def refreshFields(module: String): Unit = {
+  def refreshFields(module: String): Unit = synchronized{
     try {
       deleteFields(module)
       Utility.getFields(module)
@@ -193,7 +190,7 @@ class ModuleFieldsHandler {
    * @throws SDKException Exception
    */
   @throws[SDKException]
-  def refreshAllModules(): Unit = {
+  def refreshAllModules(): Unit = synchronized {
     try Utility.refreshModules()
     catch {
       case e: SDKException =>

@@ -16,7 +16,6 @@ import scala.collection.mutable.ArrayBuffer
 import scala.util.control.Breaks.{break, breakable}
 
 object Converter {
-  private val LOGGER = Logger.getLogger(classOf[SDKException].getName)
 }
 
 /**

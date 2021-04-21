@@ -208,6 +208,7 @@ class RecordOperations	{
 		handlerInstance.setContentType("multipart/form-data")
 		handlerInstance.setRequest(request)
 		handlerInstance.setMandatoryChecker(true)
+		Utility.getModules()
 		return handlerInstance.apiCall(classOf[FileHandler], "application/json")
 	}
 

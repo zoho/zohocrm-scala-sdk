@@ -214,7 +214,12 @@ class CommonAPIHandler {
 
     //authentication here
 
-    try Initializer.getInitializer.getToken.authenticate(connector)
+    try{
+      val initializer = Initializer.getInitializer
+      initializer.synchronized{
+        initializer.getToken.authenticate(connector)
+      }
+    }
     catch {
       case e: SDKException =>
         LOGGER.log(Level.SEVERE, Constants.AUTHENTICATION_EXCEPTION, e)

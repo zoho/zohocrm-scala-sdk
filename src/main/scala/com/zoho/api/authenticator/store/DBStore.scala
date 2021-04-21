@@ -73,7 +73,7 @@ class DBStore (private var host :Option[String]=None , private var databaseName 
      }
     }catch {
       case e : Exception =>
-        throw new SDKException(Constants.TOKEN_STORE, Constants.GET_TOKEN_DB_ERROR,null,e)
+        throw new SDKException(Constants.TOKEN_STORE, Constants.GET_TOKEN_DB_ERROR,e)
     }
     finally {
       if (resultSet != null) resultSet.close()

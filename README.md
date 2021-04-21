@@ -30,7 +30,7 @@ scala SDK requires java (version 8 and above) and scala version 2.13 and above t
 Scala SDK is available through Maven distribution. You can include the SDK to your project using:
 1. Build.sbt
     ```
-    libraryDependencies ++= Seq( "com.zoho.crm" % "scala-sdk" % "0.0.1")
+    libraryDependencies ++= Seq( "com.zoho.crm" % "scala-sdk" % "1.0.0")
     ```
 2. Maven
 
@@ -42,7 +42,7 @@ Scala SDK is available through Maven distribution. You can include the SDK to yo
         <dependency>
             <groupId>com.zoho.crm</groupId>
             <artifactId>scala-sdk</artifactId>
-            <version>0.0.1</version>
+            <version>1.0.0</version>
         </dependency>
     </dependencies>
     ```
@@ -52,7 +52,7 @@ Scala SDK is available through Maven distribution. You can include the SDK to yo
     ```gradle
  
     dependencies{
-        implementation 'com.zoho.crm:scala-sdk:0.0.1'
+        implementation 'com.zoho.crm:scala-sdk:1.0.0'
     }
      ```
 
@@ -588,7 +588,7 @@ All other exceptions such as SDK anomalies and other unexpected behaviours are t
 
 Threads in a scala program help you achieve parallelism. By using multiple threads, you can make a scala program run faster and do multiple things simultaneously.
 
-The **scala SDK** (from version 3.x.x) supports both single-threading and multi-threading irrespective of a single-user or a multi-user app.
+The **scala SDK** supports both single-threading and multi-threading irrespective of a single-user or a multi-user app.
 
 ### Multithreading in a Multi-user App
 

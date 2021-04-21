@@ -167,7 +167,6 @@ class OAuthToken(private var clientID: String, private var clientSecret: String,
     val user: UserSignature = initializer.getUser
 
     oauthToken = Initializer.getInitializer.getStore.getToken(Initializer.getInitializer.getUser, this).asInstanceOf[OAuthToken]
-
     val token: String =
       if (oauthToken == null) {
         if (this.refreshToken != null) {

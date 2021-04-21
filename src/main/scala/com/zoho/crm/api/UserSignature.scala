@@ -17,7 +17,6 @@ import com.zoho.crm.api.util.Constants
  * @param email A String containing the CRM user email.
  * @throws SDKException if a problem occurs.
  */
-@throws[SDKException]
 class UserSignature(var email: String){
   val regex: String = Constants.EMAIL_REGEX
   val pattern: Pattern = Pattern.compile(regex)

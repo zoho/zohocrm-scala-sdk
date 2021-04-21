@@ -39,6 +39,7 @@ class SDKException(private var code:String, private var message:String,private v
     this(code,message,details, null)
   }
 
+
   /**
    * @constructor Creates an SDKException class instance with the specified parameters.
    * @param code A String containing the Exception error code.

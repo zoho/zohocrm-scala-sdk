@@ -17,109 +17,109 @@ import scala.collection.mutable.ArrayBuffer
  * This object converts JSON value to the expected data type.
  */
 object DataTypeConverter {
-  private val PRE_CONVERTER_MAP = new (util.HashMap[String, DataTypeConverter.PreConverter[_]])
+  private val PRE_CONVERTER_MAP = new (util.HashMap[String, PreConverter[_]])
 
-  private val POST_CONVERTER_MAP = new (util.HashMap[String, DataTypeConverter.PostConverter[_]])
+  private val POST_CONVERTER_MAP = new (util.HashMap[String, PostConverter[_]])
 
   /**
    * This method is to initialize the PreConverter and PostConverter lambda functions.
    */
-  private def init(): Unit = {
-    if (!PRE_CONVERTER_MAP.isEmpty && !POST_CONVERTER_MAP.isEmpty) return
+  private def init(): Unit = synchronized {
+      if (!PRE_CONVERTER_MAP.isEmpty && !POST_CONVERTER_MAP.isEmpty) return
 
-    val dateTimePreConverter = new PreConverter[LocalDate] {
-      override def convert(obj: Any): LocalDate = {
-        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+      val dateTimePreConverter = new PreConverter[LocalDate] {
+        override def convert(obj: Any): LocalDate = {
+          val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
 
-        LocalDate.parse(obj.toString, formatter)
+          LocalDate.parse(obj.toString, formatter)
+        }
       }
-    }
 
-    val dateTimePostConverter = new PostConverter[LocalDate] {
-      override def convert(obj: LocalDate): Any = {
-        val date = obj.asInstanceOf[LocalDate]
+      val dateTimePostConverter = new PostConverter[LocalDate] {
+        override def convert(obj: LocalDate): Any = {
+          val date = obj.asInstanceOf[LocalDate]
 
-        date.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
+          date.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
+        }
       }
-    }
 
-    val offsetDatePreConverter = new PreConverter[OffsetDateTime] {
-      override def convert(obj: Any): OffsetDateTime = {
-        OffsetDateTime.ofInstant(Instant.from(DateTimeFormatter.ISO_OFFSET_DATE_TIME.parse(obj.toString)), ZoneId.systemDefault)
+      val offsetDatePreConverter = new PreConverter[OffsetDateTime] {
+        override def convert(obj: Any): OffsetDateTime = {
+          OffsetDateTime.ofInstant(Instant.from(DateTimeFormatter.ISO_OFFSET_DATE_TIME.parse(obj.toString)), ZoneId.systemDefault)
+        }
       }
-    }
 
-    val offsetDatePostConverter = new PostConverter[OffsetDateTime] {
-      override def convert(dateTime: OffsetDateTime): Any = dateTime.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME)
-    }
-
-    val stringPreConverter = new PreConverter[String] {
-      override def convert(obj: Any): String = obj.toString
-    }
-
-    val stringPostConverter = new PostConverter[String] {
-      override def convert(r: String): Any = r
-    }
-
-    val longPreConverter = new PreConverter[Any] {
-      override def convert(obj: Any): Any = {
-        if (obj.toString.equalsIgnoreCase("null")) return null
-        obj.toString.toLong
+      val offsetDatePostConverter = new PostConverter[OffsetDateTime] {
+        override def convert(dateTime: OffsetDateTime): Any = dateTime.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME)
       }
-    }
 
-    val longPostConverter = new PostConverter[Any] {
-      override def convert(r: Any): Any = r
-    }
+      val stringPreConverter = new PreConverter[String] {
+        override def convert(obj: Any): String = obj.toString
+      }
 
-    val integerPreConverter = new PreConverter[Int] {
-      override def convert(obj: Any): Int = obj.toString.toInt
-    }
+      val stringPostConverter = new PostConverter[String] {
+        override def convert(r: String): Any = r
+      }
 
-    val integerPostConverter = new PostConverter[Int] {
-      override def convert(r: Int): Any = r
-    }
+      val longPreConverter = new PreConverter[Any] {
+        override def convert(obj: Any): Any = {
+          if (obj.toString.equalsIgnoreCase("null")) return null
+          obj.toString.toLong
+        }
+      }
 
-    val booleanPreConverter = new PreConverter[Boolean] {
-      override def convert(obj: Any): Boolean = obj.toString.toBoolean
-    }
+      val longPostConverter = new PostConverter[Any] {
+        override def convert(r: Any): Any = r
+      }
 
-    val booleanPostConverter: PostConverter[Boolean] = (r: Boolean) => r
+      val integerPreConverter = new PreConverter[Int] {
+        override def convert(obj: Any): Int = obj.toString.toInt
+      }
 
-    val doublePreConverter = new PreConverter[Double] {
-      override def convert(obj: Any): Double = obj.toString.toDouble
-    }
+      val integerPostConverter = new PostConverter[Int] {
+        override def convert(r: Int): Any = r
+      }
 
-    val doublePostConverter = new PostConverter[Double] {
-      override def convert(r: Double): Any = r
-    }
+      val booleanPreConverter = new PreConverter[Boolean] {
+        override def convert(obj: Any): Boolean = obj.toString.toBoolean
+      }
 
-    val objPreConverter = new PreConverter[Any] {
-      override def convert(obj: Any): Any = DataTypeConverter.preConvertObjectData(obj)
-    }
+      val booleanPostConverter: PostConverter[Boolean] = (r: Boolean) => r
 
-    val objPostConverter = new PostConverter[Any] {
-      override def convert(obj: Any): Any = DataTypeConverter.postConvertObjectData(obj)
+      val doublePreConverter = new PreConverter[Double] {
+        override def convert(obj: Any): Double = obj.toString.toDouble
+      }
 
-    }
+      val doublePostConverter = new PostConverter[Double] {
+        override def convert(r: Double): Any = r
+      }
 
-    addToHashMap(classOf[LocalDate].getName, dateTimePreConverter, dateTimePostConverter)
+      val objPreConverter = new PreConverter[Any] {
+        override def convert(obj: Any): Any = preConvertObjectData(obj)
+      }
 
-    addToHashMap(classOf[OffsetDateTime].getName,offsetDatePreConverter,offsetDatePostConverter)
+      val objPostConverter = new PostConverter[Any] {
+        override def convert(obj: Any): Any = postConvertObjectData(obj)
 
-    addToHashMap(classOf[String].getName, stringPreConverter, stringPostConverter)
+      }
 
-    addToHashMap(classOf[java.lang.Long].getName, longPreConverter, longPostConverter)
+      addToHashMap(classOf[LocalDate].getName, dateTimePreConverter, dateTimePostConverter)
 
-    addToHashMap(classOf[java.lang.Integer].getName, integerPreConverter, integerPostConverter)
+      addToHashMap(classOf[OffsetDateTime].getName, offsetDatePreConverter, offsetDatePostConverter)
 
-    addToHashMap(classOf[Integer].getName, integerPreConverter, integerPostConverter)
+      addToHashMap(classOf[String].getName, stringPreConverter, stringPostConverter)
 
-    addToHashMap(classOf[java.lang.Boolean].getName, booleanPreConverter, booleanPostConverter)
+      addToHashMap(classOf[java.lang.Long].getName, longPreConverter, longPostConverter)
 
-    addToHashMap(classOf[java.lang.Double].getName, doublePreConverter, doublePostConverter)
+      addToHashMap(classOf[java.lang.Integer].getName, integerPreConverter, integerPostConverter)
 
-    addToHashMap(classOf[java.lang.Object].getName, objPreConverter, objPostConverter)
+      addToHashMap(classOf[Integer].getName, integerPreConverter, integerPostConverter)
+
+      addToHashMap(classOf[java.lang.Boolean].getName, booleanPreConverter, booleanPostConverter)
+
+      addToHashMap(classOf[java.lang.Double].getName, doublePreConverter, doublePostConverter)
+
+      addToHashMap(classOf[java.lang.Object].getName, objPreConverter, objPostConverter)
 
 
   }
@@ -131,7 +131,7 @@ object DataTypeConverter {
    * @param postConverter A PostConverter class.
    * @tparam R A R containing the specified data type.
    */
-  private def addToHashMap[R](name: String, preConverter: DataTypeConverter.PreConverter[R], postConverter: DataTypeConverter.PostConverter[R]): Unit
+  private def addToHashMap[R](name: String, preConverter: PreConverter[R], postConverter: PostConverter[R]): Unit
   = {
     PRE_CONVERTER_MAP.put(name, preConverter)
     POST_CONVERTER_MAP.put(name, postConverter)
@@ -197,7 +197,7 @@ object DataTypeConverter {
         if (jsonArray.length > 0) {
 
           for ( responseIndex <- 0 until jsonArray.length ) {
-            values.addOne(DataTypeConverter.preConvertObjectData(jsonArray.get(responseIndex)))
+            values.addOne(preConvertObjectData(jsonArray.get(responseIndex)))
           }
         }
         values
@@ -207,12 +207,12 @@ object DataTypeConverter {
 
           jsonObject.keySet().forEach(memberName => {
             val jsonValue = jsonObject.get(memberName)
-            mapInstance.put(memberName, DataTypeConverter.preConvertObjectData(jsonValue))
+            mapInstance.put(memberName, preConvertObjectData(jsonValue))
           })
         }
         mapInstance
       case _ => if (obj.getClass.getName.equalsIgnoreCase("Object")) obj
-      else DataTypeConverter.preConvert(obj, obj.getClass.getName)
+      else preConvert(obj, obj.getClass.getName)
     }
   }
 
@@ -224,7 +224,7 @@ object DataTypeConverter {
       case value1: ArrayBuffer[_] =>
         val list = new JSONArray
         for ( value <- value1 ) {
-          list.put(DataTypeConverter.postConvertObjectData(value))
+          list.put(postConvertObjectData(value))
         }
         list
       case _: Map[String, _] =>
@@ -233,12 +233,12 @@ object DataTypeConverter {
         if (requestObject.nonEmpty) {
           for ( key <- requestObject.keySet ) {
             val keyValue = requestObject.get(key)
-            value.put(key.asInstanceOf[String], DataTypeConverter.postConvertObjectData(keyValue))
+            value.put(key.asInstanceOf[String], postConvertObjectData(keyValue))
           }
         }
         value
       case _ => if (obj.getClass.getName.equalsIgnoreCase("Object")) obj
-      else DataTypeConverter.postConvert(obj, obj.getClass.getName)
+      else postConvert(obj, obj.getClass.getName)
     }
   }
 

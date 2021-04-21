@@ -17,12 +17,14 @@ class StreamWrapper (var name: Option[String]=None, var stream: Option[InputStre
     this()
 
     try {
+
       val file = new File(filePath)
       this.name = Option(file.getName)
       this.stream = Option(new FileInputStream(file))
     } catch {
-      case _: Exception =>
+      case _: Exception => {
         throw new SDKException(Constants.FILE_ERROR, Constants.FILE_DOES_NOT_EXISTS + " " + filePath)
+      }
     }
   }
 

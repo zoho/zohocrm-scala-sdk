@@ -20,7 +20,7 @@ import com.zoho.crm.api.util.Constants
  * This object is to initialize Zoho CRM SDK.
  */
 object Initializer {
-  private val LOGGER: Logger = Logger.getLogger(classOf[Initializer].getName)
+  private val LOGGER: Logger = Logger.getLogger(classOf[SDKLogger].getName)
 
   var jsonDetails: JSONObject = _
 
@@ -56,6 +56,7 @@ object Initializer {
       initializer.sdkConfig = sdkConfig
       initializer.resourcePath = resourcePath
       initializer.requestProxy = proxy.orNull
+
       LOGGER.log(Level.INFO, Constants.INITIALIZATION_SUCCESSFUL.concat(initializer.toString))
     } catch {
       case e: SDKException =>
