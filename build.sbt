@@ -8,11 +8,7 @@ organizationName:="zoho"
 organizationHomepage :=Some(url("https://www.zoho.com/crm/"))
 description := "An API client for CRM customers, with which they can call ZOHO CRM APIs with ease"
 sonatypeCredentialHost := "s01.oss.sonatype.org"
-publishTo := {
-  val nexus = "https://s01.oss.sonatype.org/"
-  if (isSnapshot.value) Some("snapshots" at nexus + "content/repositories/snapshots")
-  else Some("releases" at nexus + "service/local/staging/deploy/maven2")
-}
+publishTo :=  sonatypePublishToBundle.value
 versionScheme := Some("semver-spec")
 publishMavenStyle := true
 pomIncludeRepository := { _ =>
