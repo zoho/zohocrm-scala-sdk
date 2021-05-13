@@ -1,6 +1,5 @@
 package com.zoho.crm.api.util
 
-
 class Choice[T]{
   var value:T =_
 

@@ -29,10 +29,19 @@ object  Utility {
   private val LOGGER = Logger.getLogger(classOf[SDKLogger].getName)
   private var newFile:Boolean = false
   private var getModifiedModules:Boolean = false
+  private var moduleAPIName:String = ""
   private var forceRefresh:Boolean = false
   private val JSONDETAILS = Initializer.jsonDetails
   var apiSupportedModule = new mutable.HashMap[String,String]()
 
+  def verifyPhotoSupport(moduleAPIName: String): Unit =synchronized {
+    return
+  }
+
+  def getFields(moduleAPIName: String): Unit =synchronized {
+    Utility.moduleAPIName = moduleAPIName
+    getFieldsInfo(Utility.moduleAPIName)
+  }
   /**
    * This method to fetch field details of the current module for the current user and store the result in a JSON file.
    *
@@ -40,7 +49,7 @@ object  Utility {
    * @throws SDKException Exception
    */
   @throws[SDKException]
-  def getFields(moduleAPIName: String): Unit =synchronized {
+  def getFieldsInfo(moduleAPIName: String): Unit =synchronized {
 
     var recordFieldDetailsPath:String = null
     var lastModifiedTime:String = null
@@ -204,7 +213,7 @@ object  Utility {
       file.flush()
       file.close()
       for ( module <- modifiedModules.keySet ) {
-        getFields(module)
+        getFieldsInfo(module)
       }
     }
   }
@@ -291,7 +300,7 @@ object  Utility {
         if (relatedListJO.getString(Constants.HREF) == Constants.NULL_VALUE) throw new SDKException(Constants.UNSUPPORTED_IN_API, commonAPIHandler.getHttpMethod + " " + commonAPIHandler.getAPIPath + Constants.UNSUPPORTED_IN_API_MESSAGE)
         if (!relatedListJO.getString(Constants.MODULE).equalsIgnoreCase(Constants.NULL_VALUE)) {
           commonAPIHandler.setModuleAPIName(relatedListJO.getString(Constants.MODULE))
-          getFields(relatedListJO.getString(Constants.MODULE))
+          getFieldsInfo(relatedListJO.getString(Constants.MODULE))
         }
         return true
       }
@@ -390,7 +399,11 @@ object  Utility {
                 errorResponse.put(Constants.CODE, exception.getCode().getValue)
                 errorResponse.put(Constants.STATUS, exception.getStatus().getValue)
                 errorResponse.put(Constants.MESSAGE, exception.getMessage().getValue)
-                throw new SDKException(Constants.API_EXCEPTION, errorResponse)
+                val exceptionInstance = new SDKException(Constants.API_EXCEPTION, errorResponse)
+                if (Utility.moduleAPIName.equalsIgnoreCase(moduleAPIName)){
+                  throw exceptionInstance
+                }
+                LOGGER.log(Level.SEVERE, Constants.API_EXCEPTION, exceptionInstance)
               case _ =>
             }
         }
@@ -467,7 +480,7 @@ object  Utility {
   @throws[SDKException]
   def refreshModules(): Unit = {
     forceRefresh = true
-    getFields("")
+    getFieldsInfo("")
     forceRefresh = false
   }
 
@@ -572,7 +585,7 @@ object  Utility {
       else module = ""
       fieldDetail.put(Constants.LOOKUP, true)
     }
-    if (module.length > 0) getFields(module)
+    if (module.length > 0) getFieldsInfo(module)
     fieldDetail.put(Constants.NAME, keyName)
   }
 
