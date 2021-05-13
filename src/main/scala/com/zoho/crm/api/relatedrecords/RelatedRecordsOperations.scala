@@ -85,7 +85,7 @@ class RelatedRecordsOperations(var relatedListAPIName: String, var recordId: Lon
 		return handlerInstance.apiCall(classOf[ResponseHandler], "application/json")
 	}
 
-	def updateRelatedRecord( relatedRecordId: Long,  request: BodyWrapper) :Option[APIResponse[ActionHandler]]	={
+	def updateRelatedRecord( relatedRecordId: Long,  request: BodyWrapper,  headerInstance: Option[HeaderMap]=None) :Option[APIResponse[ActionHandler]]	={
 		var handlerInstance :CommonAPIHandler = new CommonAPIHandler()
 		var apiPath :String = new String()
 		apiPath = apiPath.concat("/crm/v2/")
@@ -101,11 +101,12 @@ class RelatedRecordsOperations(var relatedListAPIName: String, var recordId: Lon
 		handlerInstance.setCategoryMethod("UPDATE")
 		handlerInstance.setContentType("application/json")
 		handlerInstance.setRequest(request)
+		handlerInstance.setHeader(headerInstance)
 		Utility.getRelatedLists( this.relatedListAPIName,  this.moduleAPIName, handlerInstance)
 		return handlerInstance.apiCall(classOf[ActionHandler], "application/json")
 	}
 
-	def delinkRecord( relatedRecordId: Long) :Option[APIResponse[ActionHandler]]	={
+	def delinkRecord( relatedRecordId: Long,  headerInstance: Option[HeaderMap]=None) :Option[APIResponse[ActionHandler]]	={
 		var handlerInstance :CommonAPIHandler = new CommonAPIHandler()
 		var apiPath :String = new String()
 		apiPath = apiPath.concat("/crm/v2/")
@@ -119,6 +120,7 @@ class RelatedRecordsOperations(var relatedListAPIName: String, var recordId: Lon
 		handlerInstance.setAPIPath(apiPath)
 		handlerInstance.setHttpMethod(Constants.REQUEST_METHOD_DELETE)
 		handlerInstance.setCategoryMethod(Constants.REQUEST_METHOD_DELETE)
+		handlerInstance.setHeader(headerInstance)
 		return handlerInstance.apiCall(classOf[ActionHandler], "application/json")
 	}}
  object RelatedRecordsOperations{
@@ -130,6 +132,7 @@ class GetRelatedRecordsParam		{
 
 class GetRelatedRecordsHeader		{
 		final val IfModifiedSince:Header[OffsetDateTime] = new Header[OffsetDateTime]("If-Modified-Since", "com.zoho.crm.api.RelatedRecords.GetRelatedRecordsHeader")
+		final val XEXTERNAL:Header[String] = new Header[String]("X-EXTERNAL", "com.zoho.crm.api.RelatedRecords.GetRelatedRecordsHeader")
 	}
 
 
@@ -140,5 +143,15 @@ class DelinkRecordsParam		{
 
 class GetRelatedRecordHeader		{
 		final val IfModifiedSince:Header[OffsetDateTime] = new Header[OffsetDateTime]("If-Modified-Since", "com.zoho.crm.api.RelatedRecords.GetRelatedRecordHeader")
+	}
+
+
+class UpdateRelatedRecordHeader		{
+		final val XEXTERNAL:Header[String] = new Header[String]("X-EXTERNAL", "com.zoho.crm.api.RelatedRecords.UpdateRelatedRecordHeader")
+	}
+
+
+class DelinkRecordHeader		{
+		final val XEXTERNAL:Header[String] = new Header[String]("X-EXTERNAL", "com.zoho.crm.api.RelatedRecords.DelinkRecordHeader")
 	}
 }

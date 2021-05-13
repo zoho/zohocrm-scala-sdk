@@ -30,7 +30,7 @@ scala SDK requires java (version 8 and above) and scala version 2.13 and above t
 Scala SDK is available through Maven distribution. You can include the SDK to your project using:
 1. Build.sbt
     ```
-    libraryDependencies ++= Seq( "com.zoho.crm" % "scala-sdk" % "1.0.0")
+    libraryDependencies ++= Seq( "com.zoho.crm" % "scala-sdk" % "1.x.x")
     ```
 2. Maven
 
@@ -42,7 +42,7 @@ Scala SDK is available through Maven distribution. You can include the SDK to yo
         <dependency>
             <groupId>com.zoho.crm</groupId>
             <artifactId>scala-sdk</artifactId>
-            <version>1.0.0</version>
+            <version>1.x.x</version>
         </dependency>
     </dependencies>
     ```
@@ -52,7 +52,7 @@ Scala SDK is available through Maven distribution. You can include the SDK to yo
     ```gradle
  
     dependencies{
-        implementation 'com.zoho.crm:scala-sdk:1.0.0'
+        implementation 'com.zoho.crm:scala-sdk:1.x.x'
     }
      ```
 

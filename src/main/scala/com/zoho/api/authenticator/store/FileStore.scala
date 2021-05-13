@@ -1,4 +1,5 @@
 package com.zoho.api.authenticator.store
+
 import com.zoho.api.authenticator.Token
 import com.zoho.crm.api.UserSignature
 import java.io.{File, FileReader, FileWriter}

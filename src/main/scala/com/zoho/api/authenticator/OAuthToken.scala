@@ -239,7 +239,9 @@ class OAuthToken(private var clientID: String, private var clientSecret: String,
 
     requestParams(Constants.CLIENT_SECRET)= this.clientSecret
 
-    requestParams(Constants.REDIRECT_URI)= this.redirectURL.get
+    if(this.redirectURL.isDefined) {
+      requestParams(Constants.REDIRECT_URI)=this.redirectURL.get
+    }
 
     requestParams(Constants.GRANT_TYPE)= Constants.REFRESH_TOKEN
 
@@ -267,7 +269,9 @@ class OAuthToken(private var clientID: String, private var clientSecret: String,
 
     requestParams(Constants.CLIENT_SECRET)= this.clientSecret
 
-    requestParams(Constants.REDIRECT_URI)=this.redirectURL.get
+    if(this.redirectURL.isDefined) {
+      requestParams(Constants.REDIRECT_URI)=this.redirectURL.get
+    }
 
     requestParams(Constants.GRANT_TYPE)= Constants.GRANT_TYPE_AUTH_CODE
 

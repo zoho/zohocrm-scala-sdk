@@ -1,6 +1,5 @@
 package com.zoho.crm.api
 
-
 /**
  * The class to configure the SDK.
  */
